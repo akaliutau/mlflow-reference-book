@@ -1,8 +1,5 @@
 name: bitcoin
 
-docker_env:
-  image:  bitcoin
-
 entry_points:
   main:
-    command: "python train.py"
+    command: "python3 train.py"

@@ -43,11 +43,6 @@ def rolling_window(a: np.array, window: int):
 
 
 def prepare_training_data(data):
-    """
-        Return a prepared numpy dataframe
-        input : Dataframe with expected schema
-
-    """
     data['Delta'] = data['Close'] - data['Open']
     data['to_predict'] = data['Delta'].apply(lambda d: to_binary(d))
     return data

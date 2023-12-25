@@ -29,6 +29,10 @@ The serialized model is put fe. into the following path:
 
 # 01 End-to-end pipeline in MLflow: random forest linear regression for stock exchange prices
 
+(using original data from yahoo API: https://finance.yahoo.com/quote/BTC-USD/)
+
+The core idea: choose 14-days vectors and try to predict the next price move.
+
 For development install all deps locally in `01-*` folder:
 
 ```shell
@@ -43,5 +47,43 @@ Check model is working in local runtime env:
  python3 -m 01-random-forest-price-predictor.train
 ```
 
+Building model and running inference endpoint:
 
+1) build image with mlflow toolkit:
 
+```shell
+sudo docker build -t dmlflow .
+```
+
+2) run mlflow (from `01-*` project directory)
+
+```shell
+sudo docker run -v $(pwd):/mlflow/ -p 5000:5000 -it dmlflow mlflow run /mlflow/ --env-manager=local
+```
+
+3) the local equivalent of the same command:
+
+```shell
+mlflow run . --env-manager=local
+```
+
+4) check the models stat:
+
+```shell
+mlflow ui
+```
+
+6) serve the selected best model:
+
+```shell
+mlflow models serve -m runs:/<my-run-id>/<model-path> &
+
+fe.
+
+mlflow models serve -m runs:/3b10ad2ebd0a4600bd660d0d109ea1e9/model_random_forest  --env-manager=local
+```
+Predictions can be made via invoking endpoint which is exposing the chosen model:
+
+```shell
+curl -X POST  localhost:5000/invocations -H 'Content-Type: application/json' -d '{"inputs":[[1,1,1,1,0,1,1,1,0,1,1,1,0,0]]}'
+```
