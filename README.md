@@ -31,7 +31,7 @@ The serialized model is put fe. into the following path:
 
 (using original data from yahoo API: https://finance.yahoo.com/quote/BTC-USD/)
 
-The core idea: choose 14-days vectors and try to predict the next price move.
+The core idea: choose 14-days vectors and try to predict the next price move (closes higher or lower)
 
 For development install all deps locally in `01-*` folder:
 
@@ -86,4 +86,19 @@ Predictions can be made via invoking endpoint which is exposing the chosen model
 
 ```shell
 curl -X POST  localhost:5000/invocations -H 'Content-Type: application/json' -d '{"inputs":[[1,1,1,1,0,1,1,1,0,1,1,1,0,0]]}'
+```
+
+# 03 Running full training cycle at mlflow
+
+1) build image with mlflow toolkit:
+
+```shell
+sudo docker build -t dmlflow .
+```
+
+2) run mlflow (from `01-*` project directory)
+
+```shell
+export MLFLOW_CONDA_HOME=~/miniconda3
+sudo -E docker run
 ```
