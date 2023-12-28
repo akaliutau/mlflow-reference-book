@@ -2,7 +2,9 @@
 
 A handbook + runbook for typical installations and experiments with MLFlow, Jupiter Notebooks, scikit-learn and other useful tools
 
-# 00 Quickly run local instance of jupiter notebook (with classic Iris flowers classification problem)
+# 00 Quickly run local instance of jupiter notebook
+
+(with classic Iris flowers classification problem)
 
 ```shell
 sudo docker build -t jpnotebook .
@@ -27,11 +29,11 @@ with a sequential number as an experiment id.
 The serialized model is put fe. into the following path:
 `mlruns/0/c7f213c6530b4622a4d87a78264df7f4/artifacts/model/model.pkl`
 
-# 01 End-to-end pipeline in MLflow: random forest linear regression for stock exchange prices
+# 01 Training job in MLflow: random forest linear regression for stock exchange prices (local env or docker)
 
 (using original data from yahoo API: https://finance.yahoo.com/quote/BTC-USD/)
 
-The core idea: choose 14-days vectors and try to predict the next price move.
+The core idea: choose 14-days vectors and try to predict the next price move (closes higher or lower)
 
 For development install all deps locally in `01-*` folder:
 
@@ -87,3 +89,19 @@ Predictions can be made via invoking endpoint which is exposing the chosen model
 ```shell
 curl -X POST  localhost:5000/invocations -H 'Content-Type: application/json' -d '{"inputs":[[1,1,1,1,0,1,1,1,0,1,1,1,0,0]]}'
 ```
+
+# 02 Running full training cycle at mlflow (docker)
+
+1) build image with mlflow toolkit:
+
+```shell
+sudo docker build -t dmlflow .
+```
+
+2) run mlflow (from `02-*` project directory)
+
+```shell
+sudo docker run -v $(pwd)/training_project:/workdir/ -p 5000:5000 -it dmlflow --env-manager=local
+```
+
+After successful completion the directory `mlruns` will contain the result of run and experiment details
